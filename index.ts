@@ -227,7 +227,8 @@ async function drawBox(
 
 	await drawImage(
 		sharp(
-			path.resolve(__dirname, "./images/splash-screen-background.png"),
+			// path.resolve(__dirname, "./images/splash-screen-background.png"),
+			path.resolve(__dirname, "./images/squirrel-rice-bowl.png"),
 		).resize(size, size, {
 			kernel: "lanczos3",
 		}),
@@ -238,21 +239,21 @@ async function drawBox(
 	let yOffset = 0;
 	const white = rgbColor(255, 255, 255);
 
-	await drawBox(0, yOffset, 64, 19, hexColor("#1d1f21"), 0.6);
+	await drawBox(0, yOffset, 64, 19, hexColor("#1d1f21"), 0.3);
 	await drawImage(
 		sharp(path.resolve(__dirname, "./images/tivoli.png")),
 		1,
 		0,
 	);
-	yOffset += 19;
+	yOffset += 36;
 
 	await drawBox(0, yOffset, 64, 15, hexColor("#1d1f21"), 0.3);
 	await writeText(5, yOffset + 1, "0 Users", "pico8", white);
 	await writeText(5, yOffset + 8, "0 Worlds", "pico8", white);
-	// yOffset += 15;
-	yOffset += 32;
+	yOffset += 15;
+	// yOffset += 32;
 
-	await drawBox(0, yOffset, 64, 13, hexColor("#1d1f21"), 0.3);
+	await drawBox(0, yOffset, 64, 13, hexColor("#1d1f21"), 0.6);
 
 	const pixelsWithoutTime = copyUint8Array(pixels);
 
