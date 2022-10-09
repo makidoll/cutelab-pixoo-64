@@ -311,7 +311,7 @@ async function drawBox(
 		await writeText(6, yOffset, hours + ":" + minutes, "apple_kid", white);
 		await writeText(33, yOffset, month + ". " + date, "apple_kid", white);
 
-		await previewPixels();
+		// await previewPixels();
 		await pushPixels();
 	};
 
