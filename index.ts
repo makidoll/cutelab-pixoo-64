@@ -274,7 +274,8 @@ async function drawBox(
 
 	await drawBox(0, yOffset, 64, 15, hexColor("#1d1f21"), 0.3);
 
-	const pixelsWithoutTimeAndTivoli = copyUint8Array(pixels);
+	const pixelsStatic = copyUint8Array(pixels);
+	const yOffsetStatic = yOffset;
 
 	const pushPixelsWithTime = async () => {
 		const currentDate = new Date();
@@ -295,7 +296,8 @@ async function drawBox(
 			"Dec",
 		][currentDate.getMonth()];
 
-		pixels = copyUint8Array(pixelsWithoutTimeAndTivoli);
+		pixels = copyUint8Array(pixelsStatic);
+		yOffset = yOffsetStatic;
 
 		const tivoliOnline = await getTivoliOnline();
 		const users = tivoliOnline.users + " Users";
