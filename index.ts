@@ -252,7 +252,8 @@ async function drawBox(
 	await drawImage(
 		sharp(
 			// path.resolve(__dirname, "./images/splash-screen-background.png"),
-			path.resolve(__dirname, "./images/squirrel-rice-bowl.png"),
+			path.resolve(__dirname, "./images/squirrel-strawberry.png"),
+			// path.resolve(__dirname, "./images/squirrel-knothole.png"),
 		).resize(size, size, {
 			kernel: "lanczos3",
 		}),
@@ -266,8 +267,8 @@ async function drawBox(
 	await drawBox(0, yOffset, 64, 19, hexColor("#1d1f21"), 0.3);
 	await drawImage(
 		sharp(path.resolve(__dirname, "./images/tivoli.png")),
-		1,
-		0,
+		2,
+		2,
 	);
 	yOffset += 36;
 
