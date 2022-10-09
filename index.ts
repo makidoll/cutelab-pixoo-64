@@ -6,7 +6,7 @@ import { Pico8Font } from "./pico8-font";
 import { CronJob } from "cron";
 
 const size = 64;
-const ip = "192.168.1.145";
+const ip = "192.168.1.185";
 
 let pixels = new Uint8Array(size * size * 3);
 let counter = 0;
@@ -45,6 +45,20 @@ async function pushPixels() {
 		PicSpeed: 1000,
 		PicData: Buffer.from(pixels).toString("base64"),
 	});
+}
+
+async function getTivoliOnline(): Promise<{
+	users: number;
+	instances: number;
+}> {
+	try {
+		const { data } = await axios.get<{ users: number; instances: number }>(
+			"http://tivoli.space/api/stats/online",
+		);
+		return data;
+	} catch (error) {
+		return { users: -1, instances: -1 };
+	}
 }
 
 export interface Color {
@@ -179,7 +193,7 @@ async function drawImage(
 	}
 }
 
-async function previewOutput() {
+async function previewPixels() {
 	await getPixelsAsSharp().png().toFile("output.png");
 }
 
@@ -192,7 +206,17 @@ async function drawBox(
 	alpha: number,
 ) {
 	const { data, info } = await sharp({
-		create: { width, height, background: { ...color, alpha }, channels: 4 },
+		create: {
+			width,
+			height,
+			background: {
+				r: color.r / 255,
+				g: color.g / 255,
+				b: color.b / 255,
+				alpha,
+			},
+			channels: 4,
+		},
 	})
 		.raw()
 		.toBuffer({ resolveWithObject: true });
@@ -248,14 +272,8 @@ async function drawBox(
 	yOffset += 36;
 
 	await drawBox(0, yOffset, 64, 15, hexColor("#1d1f21"), 0.3);
-	await writeText(5, yOffset + 1, "0 Users", "pico8", white);
-	await writeText(5, yOffset + 8, "0 Worlds", "pico8", white);
-	yOffset += 15;
-	// yOffset += 32;
 
-	await drawBox(0, yOffset, 64, 13, hexColor("#1d1f21"), 0.6);
-
-	const pixelsWithoutTime = copyUint8Array(pixels);
+	const pixelsWithoutTimeAndTivoli = copyUint8Array(pixels);
 
 	const pushPixelsWithTime = async () => {
 		const currentDate = new Date();
@@ -276,11 +294,23 @@ async function drawBox(
 			"Dec",
 		][currentDate.getMonth()];
 
-		pixels = copyUint8Array(pixelsWithoutTime);
+		pixels = copyUint8Array(pixelsWithoutTimeAndTivoli);
+
+		const tivoliOnline = await getTivoliOnline();
+		const users = tivoliOnline.users + " Users";
+		const instances = tivoliOnline.instances + " Instances";
+
+		await writeText(5, yOffset + 1, users, "pico8", white);
+		await writeText(5, yOffset + 8, instances, "pico8", white);
+		yOffset += 15;
+		// yOffset += 32;
+
+		await drawBox(0, yOffset, 64, 13, hexColor("#1d1f21"), 0.6);
 
 		await writeText(6, yOffset, hours + ":" + minutes, "apple_kid", white);
 		await writeText(33, yOffset, month + ". " + date, "apple_kid", white);
 
+		await previewPixels();
 		await pushPixels();
 	};
 
