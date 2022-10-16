@@ -300,8 +300,8 @@ async function drawBox(
 		yOffset = yOffsetStatic;
 
 		const tivoliOnline = await getTivoliOnline();
-		const users = tivoliOnline.users + " Users";
-		const instances = tivoliOnline.instances + " Instances";
+		const users = tivoliOnline.users + " USERS";
+		const instances = tivoliOnline.instances + " INSTANCES";
 
 		await writeText(5, yOffset + 1, users, "pico8", white);
 		await writeText(5, yOffset + 8, instances, "pico8", white);
